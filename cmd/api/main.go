@@ -3,17 +3,20 @@ package main
 import (
 	"LMSBitLab/internal/config"
 	"LMSBitLab/internal/database"
-	"log"
+
+	"github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	logrus.SetFormatter(&logrus.JSONFormatter{})
+	logrus.SetLevel(logrus.InfoLevel)
 	cfg := config.Load()
 
 	db, err := database.NewConnection(cfg)
 	if err != nil {
-		log.Fatalf("Не удалось подключиться к БД: %v", err)
+		logrus.Fatalf("Не удалось подключиться к БД: %v", err)
 	}
 
 	sqlDB, _ := db.DB()
@@ -27,6 +30,6 @@ func main() {
 
 	errStart := router.Run(":" + cfg.AppPort)
 	if errStart != nil {
-		log.Fatalf("Не удалось запустить приложение: %v", errStart)
+		logrus.Fatalf("Не удалось запустить приложение: %v", errStart)
 	}
 }
