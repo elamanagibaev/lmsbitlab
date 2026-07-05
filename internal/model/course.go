@@ -8,8 +8,6 @@ type Course struct {
 	Description string `gorm:"type:text"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-}
 
-func (c Course) TableName() string {
-	return "courses"
+	Chapter []Chapter `gorm:"foreignKey:CourseID"`
 }

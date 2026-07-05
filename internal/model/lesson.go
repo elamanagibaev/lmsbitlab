@@ -14,7 +14,3 @@ type Lesson struct {
 
 	Chapter Chapter `gorm:"foreignKey:ChapterID;references:ID"`
 }
-
-func (l Lesson) TableName() string {
-	return "lessons"
-}

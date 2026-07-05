@@ -11,9 +11,6 @@ type Chapter struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 
-	Course Course `gorm:"foreignKey:CourseID;references:ID"`
-}
-
-func (c Chapter) TableName() string {
-	return "chapters"
+	Course  Course   `gorm:"foreignKey:CourseID;references:ID"`
+	Lessons []Lesson `gorm:"foreignKey:ChapterID"`
 }
