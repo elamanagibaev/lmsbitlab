@@ -1,6 +1,7 @@
 package main
 
 import (
+	"LMSBitLab/internal/api"
 	"LMSBitLab/internal/config"
 	"LMSBitLab/internal/database"
 
@@ -23,6 +24,7 @@ func main() {
 	defer sqlDB.Close()
 
 	router := gin.Default()
+	router.Use(api.ErrorMiddleware())
 
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})

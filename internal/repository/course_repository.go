@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"LMSBitLab/internal/apperrors"
 	"LMSBitLab/internal/model"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -29,7 +31,9 @@ func (r *courseRepository) Create(course *model.Course) error {
 func (r *courseRepository) GetByID(id uint) (*model.Course, error) {
 	var course model.Course
 	if err := r.db.First(&course, id).Error; err != nil {
-		return nil, err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, apperrors.ErrCourseNotFound
+		}
 	}
 	return &course, nil
 }
