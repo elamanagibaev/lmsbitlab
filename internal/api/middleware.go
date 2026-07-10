@@ -2,8 +2,6 @@ package api
 
 import (
 	"LMSBitLab/internal/apperrors"
-	"errors"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,15 +15,11 @@ func ErrorMiddleware() gin.HandlerFunc {
 		}
 
 		err := c.Errors.Last().Err
-		if errors.Is(err, apperrors.ErrCourseNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
+		status := apperrors.StatusCode(err)
 
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "internal server error",
+		c.JSON(status, Response{
+			Success: false,
+			Error:   err.Error(),
 		})
 	}
 }

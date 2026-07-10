@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"LMSBitLab/internal/apperrors"
 	"LMSBitLab/internal/model"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -29,6 +31,9 @@ func (r *chapterRepository) Create(chapter *model.Chapter) error {
 func (r *chapterRepository) GetByID(id uint) (*model.Chapter, error) {
 	var chapter model.Chapter
 	if err := r.db.First(&chapter, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, apperrors.ErrChapterNotFound
+		}
 		return nil, err
 	}
 	return &chapter, nil

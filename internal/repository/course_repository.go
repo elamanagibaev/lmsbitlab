@@ -34,6 +34,7 @@ func (r *courseRepository) GetByID(id uint) (*model.Course, error) {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, apperrors.ErrCourseNotFound
 		}
+		return nil, err
 	}
 	return &course, nil
 }

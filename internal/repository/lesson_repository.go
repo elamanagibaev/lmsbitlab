@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"LMSBitLab/internal/apperrors"
 	"LMSBitLab/internal/model"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -29,6 +31,9 @@ func (r *lessonRepository) Create(lesson *model.Lesson) error {
 func (r *lessonRepository) GetByID(id uint) (*model.Lesson, error) {
 	var lesson model.Lesson
 	if err := r.db.First(&lesson, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, apperrors.ErrLessonNotFound
+		}
 		return nil, err
 	}
 	return &lesson, nil
