@@ -1,0 +1,15 @@
+with-expecter: true
+dir: "{{.InterfaceDir}}/mocks"
+outpkg: mocks
+filename: "{{.InterfaceName}}.go"
+packages:
+  LMSBitLab/internal/repository:
+    interfaces:
+      CourseRepository:
+      ChapterRepository:
+      LessonRepository:
+  LMSBitLab/internal/service:
+    interfaces:
+      CourseService:
+      ChapterService:
+      LessonService:

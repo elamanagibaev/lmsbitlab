@@ -41,7 +41,7 @@ func (s *lessonService) Create(input dto.CreateLessonDTO) (dto.LessonResponseDTO
 		return dto.LessonResponseDTO{}, err
 	}
 
-	logrus.Debugf("Lesson created details: ID=%d, Name=%d, Order=%d, ChapterID=%d", lesson.ID, lesson.Name, lesson.Order, lesson.ChapterID)
+	logrus.Debugf("Lesson created details: ID=%d, Name=%s, Order=%d, ChapterID=%d", lesson.ID, lesson.Name, lesson.Order, lesson.ChapterID)
 	logrus.Infof("Занятие успешно создано: ID=%d, Name=%s", lesson.ID, lesson.Name)
 	return mapper.ToLessonResponseDTO(lesson), nil
 }
