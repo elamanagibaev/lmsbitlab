@@ -41,7 +41,7 @@ func (r *lessonRepository) GetByID(id uint) (*model.Lesson, error) {
 
 func (r *lessonRepository) GetAllByChapterID(chapterID uint) ([]model.Lesson, error) {
 	var lessons []model.Lesson
-	if err := r.db.Where("chapter_id = ?", chapterID).Order("order ASC").Find(&lessons).Error; err != nil {
+	if err := r.db.Where("chapter_id = ?", chapterID).Order("\"order\" ASC").Find(&lessons).Error; err != nil {
 		return nil, err
 	}
 	return lessons, nil

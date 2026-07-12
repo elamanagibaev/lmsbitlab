@@ -30,6 +30,14 @@ func main() {
 	courseService := service.NewCourseService(courseRepo)
 	courseHandler := handler.NewCourseHandler(courseService)
 
+	chapterRepo := repository.NewChapterRepository(db)
+	chapterService := service.NewChapterService(chapterRepo)
+	chapterHandler := handler.NewChapterHandler(chapterService)
+
+	lessonRepo := repository.NewLessonRepository(db)
+	lessonService := service.NewLessonService(lessonRepo)
+	lessonHandler := handler.NewLessonHandler(lessonService)
+
 	router := gin.Default()
 	router.Use(api.ErrorMiddleware())
 
@@ -44,6 +52,24 @@ func main() {
 		courses.GET("/:id", courseHandler.GetByID)
 		courses.PUT("/:id", courseHandler.Update)
 		courses.DELETE("/:id", courseHandler.Delete)
+		courses.GET("/:id/chapters", chapterHandler.GetByCourseID)
+	}
+
+	chapters := router.Group("/chapters")
+	{
+		chapters.POST("", chapterHandler.Create)
+		chapters.GET("/:id", chapterHandler.GetByID)
+		chapters.PUT("/:id", chapterHandler.Update)
+		chapters.DELETE("/:id", chapterHandler.Delete)
+		chapters.GET("/:id/lessons", lessonHandler.GetByChapterID)
+	}
+
+	lessons := router.Group("/lessons")
+	{
+		lessons.POST("", lessonHandler.Create)
+		lessons.GET("/:id", lessonHandler.GetByID)
+		lessons.PUT("/:id", lessonHandler.Update)
+		lessons.DELETE("/:id", lessonHandler.Delete)
 	}
 
 	errStart := router.Run(":" + cfg.AppPort)

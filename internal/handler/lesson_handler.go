@@ -10,16 +10,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type ChapterHandler struct {
-	service service.ChapterService
+type LessonHandler struct {
+	service service.LessonService
 }
 
-func NewChapterHandler(service service.ChapterService) *ChapterHandler {
-	return &ChapterHandler{service: service}
+func NewLessonHandler(service service.LessonService) *LessonHandler {
+	return &LessonHandler{service: service}
 }
 
-func (h *ChapterHandler) Create(c *gin.Context) {
-	var input dto.CreateChapterDTO
+func (h *LessonHandler) Create(c *gin.Context) {
+	var input dto.CreateLessonDTO
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, api.Response{
 			Success: false,
@@ -40,12 +40,12 @@ func (h *ChapterHandler) Create(c *gin.Context) {
 	})
 }
 
-func (h *ChapterHandler) GetByID(c *gin.Context) {
+func (h *LessonHandler) GetByID(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, api.Response{
 			Success: false,
-			Error:   "invalid course id",
+			Error:   "invalid lesson id",
 		})
 		return
 	}
@@ -62,17 +62,17 @@ func (h *ChapterHandler) GetByID(c *gin.Context) {
 	})
 }
 
-func (h *ChapterHandler) GetByCourseID(c *gin.Context) {
-	courseID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+func (h *LessonHandler) GetByChapterID(c *gin.Context) {
+	chapterID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, api.Response{
 			Success: false,
-			Error:   "invalid course id",
+			Error:   "invalid chapter id",
 		})
 		return
 	}
 
-	result, err := h.service.GetByCourseID(uint(courseID))
+	result, err := h.service.GetByChapterID(uint(chapterID))
 	if err != nil {
 		c.Error(err)
 		return
@@ -84,17 +84,17 @@ func (h *ChapterHandler) GetByCourseID(c *gin.Context) {
 	})
 }
 
-func (h *ChapterHandler) Update(c *gin.Context) {
+func (h *LessonHandler) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, api.Response{
 			Success: false,
-			Error:   "invalid chapter id",
+			Error:   "invalid lesson id",
 		})
 		return
 	}
 
-	var input dto.UpdateChapterDTO
+	var input dto.UpdateLessonDTO
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, api.Response{
 			Success: false,
@@ -115,12 +115,12 @@ func (h *ChapterHandler) Update(c *gin.Context) {
 	})
 }
 
-func (h *ChapterHandler) Delete(c *gin.Context) {
+func (h *LessonHandler) Delete(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, api.Response{
 			Success: false,
-			Error:   "invalid chapter id",
+			Error:   "invalid lesson id",
 		})
 		return
 	}
