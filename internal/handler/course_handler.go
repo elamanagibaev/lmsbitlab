@@ -19,6 +19,17 @@ func NewCourseHandler(service service.CourseService) *CourseHandler {
 	return &CourseHandler{service: service}
 }
 
+// Create godoc
+// @Summary      Создать курс
+// @Description  Создаёт новый курс
+// @Tags         courses
+// @Accept       json
+// @Produce      json
+// @Param        input  body      dto.CreateCourseDTO  true  "Данные курса"
+// @Success      201    {object}  api.Response{data=dto.CourseResponseDTO}
+// @Failure      400    {object}  api.Response
+// @Failure      500    {object}  api.Response
+// @Router       /courses [post]
 func (h *CourseHandler) Create(c *gin.Context) {
 	var input dto.CreateCourseDTO
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -41,6 +52,16 @@ func (h *CourseHandler) Create(c *gin.Context) {
 	})
 }
 
+// GetByID godoc
+// @Summary      Получить курс по ID
+// @Description  Возвращает курс по его идентификатору
+// @Tags         courses
+// @Produce      json
+// @Param        id   path      int  true  "ID курса"
+// @Success      200  {object}  api.Response{data=dto.CourseResponseDTO}
+// @Failure      400  {object}  api.Response
+// @Failure      404  {object}  api.Response
+// @Router       /courses/{id} [get]
 func (h *CourseHandler) GetByID(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -63,6 +84,14 @@ func (h *CourseHandler) GetByID(c *gin.Context) {
 	})
 }
 
+// GetAll godoc
+// @Summary      Получить все курсы
+// @Description  Возвращает список всех курсов
+// @Tags         courses
+// @Produce      json
+// @Success      200  {object}  api.Response{data=[]dto.CourseResponseDTO}
+// @Failure      500  {object}  api.Response
+// @Router       /courses [get]
 func (h *CourseHandler) GetAll(c *gin.Context) {
 	result, err := h.service.GetAll()
 	if err != nil {
@@ -76,6 +105,19 @@ func (h *CourseHandler) GetAll(c *gin.Context) {
 	})
 }
 
+// Update godoc
+// @Summary      Обновить курс
+// @Description  Обновляет существующий курс по ID
+// @Tags         courses
+// @Accept       json
+// @Produce      json
+// @Param        id     path      int                   true  "ID курса"
+// @Param        input  body      dto.UpdateCourseDTO   true  "Обновлённые данные курса"
+// @Success      200    {object}  api.Response{data=dto.CourseResponseDTO}
+// @Failure      400    {object}  api.Response
+// @Failure      404    {object}  api.Response
+// @Failure      500    {object}  api.Response
+// @Router       /courses/{id} [put]
 func (h *CourseHandler) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -107,6 +149,17 @@ func (h *CourseHandler) Update(c *gin.Context) {
 	})
 }
 
+// Delete godoc
+// @Summary      Удалить курс
+// @Description  Удаляет курс по ID
+// @Tags         courses
+// @Produce      json
+// @Param        id   path      int  true  "ID курса"
+// @Success      200  {object}  api.Response
+// @Failure      400  {object}  api.Response
+// @Failure      404  {object}  api.Response
+// @Failure      500  {object}  api.Response
+// @Router       /courses/{id} [delete]
 func (h *CourseHandler) Delete(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

@@ -18,6 +18,17 @@ func NewLessonHandler(service service.LessonService) *LessonHandler {
 	return &LessonHandler{service: service}
 }
 
+// Create godoc
+// @Summary      Создать урок
+// @Description  Создаёт новый урок внутри главы
+// @Tags         lessons
+// @Accept       json
+// @Produce      json
+// @Param        input  body      dto.CreateLessonDTO  true  "Данные урока"
+// @Success      201    {object}  api.Response{data=dto.LessonResponseDTO}
+// @Failure      400    {object}  api.Response
+// @Failure      500    {object}  api.Response
+// @Router       /lessons [post]
 func (h *LessonHandler) Create(c *gin.Context) {
 	var input dto.CreateLessonDTO
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -40,6 +51,16 @@ func (h *LessonHandler) Create(c *gin.Context) {
 	})
 }
 
+// GetByID godoc
+// @Summary      Получить урок по ID
+// @Description  Возвращает урок по его идентификатору
+// @Tags         lessons
+// @Produce      json
+// @Param        id   path      int  true  "ID урока"
+// @Success      200  {object}  api.Response{data=dto.LessonResponseDTO}
+// @Failure      400  {object}  api.Response
+// @Failure      404  {object}  api.Response
+// @Router       /lessons/{id} [get]
 func (h *LessonHandler) GetByID(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -62,6 +83,16 @@ func (h *LessonHandler) GetByID(c *gin.Context) {
 	})
 }
 
+// GetByChapterID godoc
+// @Summary      Получить уроки главы
+// @Description  Возвращает список уроков конкретной главы
+// @Tags         lessons
+// @Produce      json
+// @Param        id   path      int  true  "ID главы"
+// @Success      200  {object}  api.Response{data=[]dto.LessonResponseDTO}
+// @Failure      400  {object}  api.Response
+// @Failure      500  {object}  api.Response
+// @Router       /chapters/{id}/lessons [get]
 func (h *LessonHandler) GetByChapterID(c *gin.Context) {
 	chapterID, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -84,6 +115,19 @@ func (h *LessonHandler) GetByChapterID(c *gin.Context) {
 	})
 }
 
+// Update godoc
+// @Summary      Обновить урок
+// @Description  Обновляет существующий урок по ID
+// @Tags         lessons
+// @Accept       json
+// @Produce      json
+// @Param        id     path      int                  true  "ID урока"
+// @Param        input  body      dto.UpdateLessonDTO  true  "Обновлённые данные урока"
+// @Success      200    {object}  api.Response{data=dto.LessonResponseDTO}
+// @Failure      400    {object}  api.Response
+// @Failure      404    {object}  api.Response
+// @Failure      500    {object}  api.Response
+// @Router       /lessons/{id} [put]
 func (h *LessonHandler) Update(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
@@ -115,6 +159,17 @@ func (h *LessonHandler) Update(c *gin.Context) {
 	})
 }
 
+// Delete godoc
+// @Summary      Удалить урок
+// @Description  Удаляет урок по ID
+// @Tags         lessons
+// @Produce      json
+// @Param        id   path      int  true  "ID урока"
+// @Success      200  {object}  api.Response
+// @Failure      400  {object}  api.Response
+// @Failure      404  {object}  api.Response
+// @Failure      500  {object}  api.Response
+// @Router       /lessons/{id} [delete]
 func (h *LessonHandler) Delete(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {

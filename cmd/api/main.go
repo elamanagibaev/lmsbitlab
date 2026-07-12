@@ -8,11 +8,21 @@ import (
 	"LMSBitLab/internal/repository"
 	"LMSBitLab/internal/service"
 
+	_ "LMSBitLab/docs"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
 )
 
+// @title LMS BitLab API
+// @version 1.0
+// @description API для управления курсами, главами и уроками платформы LMS BitLab.
+// @host localhost:8080
+// @BasePath /
 func main() {
 	logrus.SetFormatter(&logrus.JSONFormatter{})
 	cfg := config.Load()
@@ -50,6 +60,7 @@ func main() {
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
 	})
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	courses := router.Group("/courses")
 	{

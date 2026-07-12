@@ -1,0 +1,644 @@
+basePath: /
+definitions:
+  api.Response:
+    properties:
+      data: {}
+      error:
+        type: string
+      success:
+        type: boolean
+    type: object
+  dto.ChapterResponseDTO:
+    properties:
+      course_id:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      order:
+        type: integer
+    type: object
+  dto.CourseResponseDTO:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  dto.CreateChapterDTO:
+    properties:
+      course_id:
+        type: integer
+      description:
+        type: string
+      name:
+        type: string
+      order:
+        type: integer
+    required:
+    - course_id
+    - name
+    - order
+    type: object
+  dto.CreateCourseDTO:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  dto.CreateLessonDTO:
+    properties:
+      chapter_id:
+        type: integer
+      content:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      order:
+        type: integer
+    required:
+    - chapter_id
+    - content
+    - name
+    - order
+    type: object
+  dto.LessonResponseDTO:
+    properties:
+      chapter_id:
+        type: integer
+      content:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      order:
+        type: integer
+    type: object
+  dto.UpdateChapterDTO:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      order:
+        type: integer
+    required:
+    - name
+    - order
+    type: object
+  dto.UpdateCourseDTO:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  dto.UpdateLessonDTO:
+    properties:
+      content:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      order:
+        type: integer
+    required:
+    - content
+    - name
+    - order
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API для управления курсами, главами и уроками платформы LMS BitLab.
+  title: LMS BitLab API
+  version: "1.0"
+paths:
+  /chapters:
+    post:
+      consumes:
+      - application/json
+      description: Создаёт новую главу внутри курса
+      parameters:
+      - description: Данные главы
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateChapterDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ChapterResponseDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Создать главу
+      tags:
+      - chapters
+  /chapters/{id}:
+    delete:
+      description: Удаляет главу по ID
+      parameters:
+      - description: ID главы
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Удалить главу
+      tags:
+      - chapters
+    get:
+      description: Возвращает главу по её идентификатору
+      parameters:
+      - description: ID главы
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ChapterResponseDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Получить главу по ID
+      tags:
+      - chapters
+    put:
+      consumes:
+      - application/json
+      description: Обновляет существующую главу по ID
+      parameters:
+      - description: ID главы
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Обновлённые данные главы
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateChapterDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ChapterResponseDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Обновить главу
+      tags:
+      - chapters
+  /chapters/{id}/lessons:
+    get:
+      description: Возвращает список уроков конкретной главы
+      parameters:
+      - description: ID главы
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.LessonResponseDTO'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Получить уроки главы
+      tags:
+      - lessons
+  /courses:
+    get:
+      description: Возвращает список всех курсов
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.CourseResponseDTO'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Получить все курсы
+      tags:
+      - courses
+    post:
+      consumes:
+      - application/json
+      description: Создаёт новый курс
+      parameters:
+      - description: Данные курса
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCourseDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.CourseResponseDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Создать курс
+      tags:
+      - courses
+  /courses/{id}:
+    delete:
+      description: Удаляет курс по ID
+      parameters:
+      - description: ID курса
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Удалить курс
+      tags:
+      - courses
+    get:
+      description: Возвращает курс по его идентификатору
+      parameters:
+      - description: ID курса
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.CourseResponseDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Получить курс по ID
+      tags:
+      - courses
+    put:
+      consumes:
+      - application/json
+      description: Обновляет существующий курс по ID
+      parameters:
+      - description: ID курса
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Обновлённые данные курса
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateCourseDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.CourseResponseDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Обновить курс
+      tags:
+      - courses
+  /courses/{id}/chapters:
+    get:
+      description: Возвращает список глав конкретного курса
+      parameters:
+      - description: ID курса
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.ChapterResponseDTO'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Получить главы курса
+      tags:
+      - chapters
+  /lessons:
+    post:
+      consumes:
+      - application/json
+      description: Создаёт новый урок внутри главы
+      parameters:
+      - description: Данные урока
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateLessonDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.LessonResponseDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Создать урок
+      tags:
+      - lessons
+  /lessons/{id}:
+    delete:
+      description: Удаляет урок по ID
+      parameters:
+      - description: ID урока
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Удалить урок
+      tags:
+      - lessons
+    get:
+      description: Возвращает урок по его идентификатору
+      parameters:
+      - description: ID урока
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.LessonResponseDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Получить урок по ID
+      tags:
+      - lessons
+    put:
+      consumes:
+      - application/json
+      description: Обновляет существующий урок по ID
+      parameters:
+      - description: ID урока
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Обновлённые данные урока
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateLessonDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/api.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.LessonResponseDTO'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.Response'
+      summary: Обновить урок
+      tags:
+      - lessons
+swagger: "2.0"
