@@ -26,6 +26,8 @@ func NewLessonService(repo repository.LessonRepository) LessonService {
 }
 
 func (s *lessonService) Create(input dto.CreateLessonDTO) (dto.LessonResponseDTO, error) {
+	logrus.Info("Creating new lesson")
+
 	lesson := &model.Lesson{
 		Name:        input.Name,
 		Description: input.Description,
@@ -39,6 +41,7 @@ func (s *lessonService) Create(input dto.CreateLessonDTO) (dto.LessonResponseDTO
 		return dto.LessonResponseDTO{}, err
 	}
 
+	logrus.Debugf("Lesson created details: ID=%d, Name=%d, Order=%d, ChapterID=%d", lesson.ID, lesson.Name, lesson.Order, lesson.ChapterID)
 	logrus.Infof("Занятие успешно создано: ID=%d, Name=%s", lesson.ID, lesson.Name)
 	return mapper.ToLessonResponseDTO(lesson), nil
 }
@@ -53,9 +56,10 @@ func (s *lessonService) GetByID(id uint) (dto.LessonResponseDTO, error) {
 	return mapper.ToLessonResponseDTO(lesson), nil
 }
 
-func (s *lessonService) GetByChapterID(id uint) ([]dto.LessonResponseDTO, error) {
-	lessons, err := s.repo.GetAllByChapterID(id)
+func (s *lessonService) GetByChapterID(chapterID uint) ([]dto.LessonResponseDTO, error) {
+	lessons, err := s.repo.GetAllByChapterID(chapterID)
 	if err != nil {
+		logrus.Errorf("Не удалось получить уроки главы: ChapterID=%d, %v", chapterID, err)
 		return nil, err
 	}
 
@@ -63,6 +67,8 @@ func (s *lessonService) GetByChapterID(id uint) ([]dto.LessonResponseDTO, error)
 }
 
 func (s *lessonService) Update(id uint, input dto.UpdateLessonDTO) (dto.LessonResponseDTO, error) {
+	logrus.Infof("Updating lesson: ID=%d", id)
+
 	lesson, err := s.repo.GetByID(id)
 	if err != nil {
 		logrus.Errorf("Не удалось найти урок для обновления: ID=%d, %v", id, err)
@@ -79,15 +85,18 @@ func (s *lessonService) Update(id uint, input dto.UpdateLessonDTO) (dto.LessonRe
 		return dto.LessonResponseDTO{}, err
 	}
 
+	logrus.Debugf("Lesson updated details: ID=%d, Name=%s, Order=%d", lesson.ID, lesson.Name, lesson.Order)
 	logrus.Infof("Урок успешно обновлен: Name=%s", lesson.Name)
 	return mapper.ToLessonResponseDTO(lesson), nil
 }
 
 func (s *lessonService) Delete(id uint) error {
+	logrus.Infof("Deleting lesson: ID=%d", id)
 	err := s.repo.Delete(id)
 	if err != nil {
 		logrus.Errorf("Не удалось удалить урок: ID=%d, %v", id, err)
 		return err
 	}
+	logrus.Infof("Урок удален: ID=%d", id)
 	return nil
 }

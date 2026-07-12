@@ -26,6 +26,8 @@ func NewCourseService(repo repository.CourseRepository) CourseService {
 }
 
 func (s *courseService) Create(input dto.CreateCourseDTO) (dto.CourseResponseDTO, error) {
+	logrus.Info("Creating new course")
+
 	course := &model.Course{
 		Name:        input.Name,
 		Description: input.Description,
@@ -36,6 +38,7 @@ func (s *courseService) Create(input dto.CreateCourseDTO) (dto.CourseResponseDTO
 		return dto.CourseResponseDTO{}, err
 	}
 
+	logrus.Debugf("Course created details: ID=%d, Name=%s, Description=%s", course.ID, course.Name, course.Description)
 	logrus.Infof("Курс создан: ID:%d, Name=%s", course.ID, course.Name)
 	return mapper.ToCourseResponseDTO(course), nil
 }
@@ -43,6 +46,7 @@ func (s *courseService) Create(input dto.CreateCourseDTO) (dto.CourseResponseDTO
 func (s *courseService) GetByID(id uint) (dto.CourseResponseDTO, error) {
 	course, err := s.repo.GetByID(id)
 	if err != nil {
+		logrus.Errorf("Не удалось найти курс: ID=%d, %v", id, err)
 		return dto.CourseResponseDTO{}, err
 	}
 
@@ -52,6 +56,7 @@ func (s *courseService) GetByID(id uint) (dto.CourseResponseDTO, error) {
 func (s *courseService) GetAll() ([]dto.CourseResponseDTO, error) {
 	courses, err := s.repo.GetAll()
 	if err != nil {
+		logrus.Errorf("Не удалось получить список курсов: %v", err)
 		return nil, err
 	}
 
@@ -73,6 +78,7 @@ func (s *courseService) Update(id uint, input dto.UpdateCourseDTO) (dto.CourseRe
 		return dto.CourseResponseDTO{}, err
 	}
 
+	logrus.Debugf("Course updated details: ID=%d, Name=%s, Description=%s", course.ID, course.Name, course.Description)
 	logrus.Infof("Курс обновлен: ID=%d, Name=%s", course.ID, course.Name)
 	return mapper.ToCourseResponseDTO(course), nil
 }

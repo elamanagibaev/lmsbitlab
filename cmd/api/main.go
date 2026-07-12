@@ -15,8 +15,14 @@ import (
 
 func main() {
 	logrus.SetFormatter(&logrus.JSONFormatter{})
-	logrus.SetLevel(logrus.InfoLevel)
 	cfg := config.Load()
+
+	level, err := logrus.ParseLevel(cfg.LogLevel)
+	if err != nil {
+		logrus.Warnf("Некорректный LOG_LEVEL=%q, используется info: %v", cfg.LogLevel, err)
+		level = logrus.InfoLevel
+	}
+	logrus.SetLevel(level)
 
 	db, err := database.NewConnection(cfg)
 	if err != nil {

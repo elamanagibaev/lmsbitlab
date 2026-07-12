@@ -26,6 +26,8 @@ func NewChapterService(repo repository.ChapterRepository) ChapterService {
 }
 
 func (s *chapterService) Create(input dto.CreateChapterDTO) (dto.ChapterResponseDTO, error) {
+	logrus.Info("Creating new chapter")
+
 	chapter := &model.Chapter{
 		Name:        input.Name,
 		Description: input.Description,
@@ -38,6 +40,7 @@ func (s *chapterService) Create(input dto.CreateChapterDTO) (dto.ChapterResponse
 		return dto.ChapterResponseDTO{}, err
 	}
 
+	logrus.Debugf("Chapter created details: ID=%d, Name=%s, Order=%d, CourseID=%d", chapter.ID, chapter.Name, chapter.Order, chapter.CourseID)
 	logrus.Infof("Глава успешна создана: ID=%d, Name=%s", chapter.ID, chapter.Name)
 	return mapper.ToChapterResponseDTO(chapter), nil
 }
@@ -45,6 +48,7 @@ func (s *chapterService) Create(input dto.CreateChapterDTO) (dto.ChapterResponse
 func (s *chapterService) GetByID(id uint) (dto.ChapterResponseDTO, error) {
 	chapter, err := s.repo.GetByID(id)
 	if err != nil {
+		logrus.Errorf("Не удалосб найти главу: ID=%d, %v", id, err)
 		return dto.ChapterResponseDTO{}, err
 	}
 
@@ -54,6 +58,7 @@ func (s *chapterService) GetByID(id uint) (dto.ChapterResponseDTO, error) {
 func (s *chapterService) GetByCourseID(courseID uint) ([]dto.ChapterResponseDTO, error) {
 	chapters, err := s.repo.GetAllByCourseID(courseID)
 	if err != nil {
+		logrus.Errorf("Не удалось получить главы курса: CourseID=%d, %v", courseID, err)
 		return nil, err
 	}
 
@@ -61,6 +66,8 @@ func (s *chapterService) GetByCourseID(courseID uint) ([]dto.ChapterResponseDTO,
 }
 
 func (s *chapterService) Update(id uint, input dto.UpdateChapterDTO) (dto.ChapterResponseDTO, error) {
+	logrus.Infof("Updating chapter: ID=%d", id)
+
 	chapter, err := s.repo.GetByID(id)
 	if err != nil {
 		logrus.Errorf("Не удалось найти главу для обновления, ID=%d, %v", id, err)
@@ -76,11 +83,13 @@ func (s *chapterService) Update(id uint, input dto.UpdateChapterDTO) (dto.Chapte
 		return dto.ChapterResponseDTO{}, err
 	}
 
+	logrus.Debugf("Chapter updated details: ID=%d, Name=%s, Order=%d", chapter.ID, chapter.Name, chapter.Order)
 	logrus.Infof("Глава успешна обновлена ID=%d, Name=%s", chapter.ID, chapter.Name)
 	return mapper.ToChapterResponseDTO(chapter), nil
 }
 
 func (s *chapterService) Delete(id uint) error {
+	logrus.Infof("Deleting chapter: ID=%d", id)
 	if err := s.repo.Delete(id); err != nil {
 		logrus.Errorf("Не удалось удалить главу, ID=%d, %v", id, err)
 		return err
