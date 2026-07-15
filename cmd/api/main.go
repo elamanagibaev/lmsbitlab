@@ -42,6 +42,11 @@ func main() {
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
 
+	if err := database.RunMigrations(db); err != nil {
+		logrus.Fatalf("Не удалось применить миграции: %v", err)
+	}
+	logrus.Info("Миграции успешно применены")
+
 	courseRepo := repository.NewCourseRepository(db)
 	courseService := service.NewCourseService(courseRepo)
 	courseHandler := handler.NewCourseHandler(courseService)
